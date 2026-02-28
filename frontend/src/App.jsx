@@ -29,8 +29,8 @@ function App() {
         5000,
       );
 
-      const API_BASE_URL =
-        import.meta.env.VITE_API_URL || "http://localhost:5001";
+      const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:5001";
+      const API_BASE_URL = rawUrl.endsWith("/") ? rawUrl.slice(0, -1) : rawUrl;
       const response = await fetch(`${API_BASE_URL}/api/generate-podcast`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

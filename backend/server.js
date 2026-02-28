@@ -11,6 +11,11 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
+// Simple healthcheck route for Render
+app.get("/", (req, res) => {
+  res.send("🚀 The Elon Podcast API is running locally or on Render!");
+});
+
 // ─── Chutes LLM client — Qwen/Qwen3-32B for transcript generation ────────────
 const chutesLLM = new OpenAI({
   baseURL: "https://llm.chutes.ai/v1",
