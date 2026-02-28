@@ -196,22 +196,19 @@ app.post("/api/generate-podcast", async (req, res) => {
 
     // ── STEP 1: Transcript via DeepSeek-V3 ──────────────────────────────────
     console.log("   Step 1/2: Transcript generation (Qwen/Qwen3-32B)...");
-    const llmResponse = await chutesLLM.chat.completions.create(
-      {
-        model: "Qwen/Qwen3-32B",
-        messages: [
-          { role: "system", content: PODCAST_SYSTEM_PROMPT },
-          { role: "user", content: `Topic: ${topic}` },
-        ],
-        temperature: 0.7,
-        response_format: { type: "json_object" },
-      },
-      {
-        // Disable Qwen3 chain-of-thought thinking mode — prevents <think> blocks
-        // from breaking JSON.parse and cuts response time by 30–50%
-        body: { enable_thinking: false },
-      },
-    );
+    const llmResponse = await chutesLLM.chat.completions.create({
+      model: "Qwen/Qwen3-32B",
+      messages: [
+        { role: "system", content: PODCAST_SYSTEM_PROMPT },
+        { role: "user", content: `Topic: ${topic}` },
+      ],
+      temperature: 0.7,
+      response_format: { type: "json_object" },
+      // Disable Qwen3 chain-of-thought thinking mode — prevents <think> blocks
+      // from breaking JSON.parse and cuts response time by 30–50%
+      // NOTE: must be in the main body (not extra options) for OpenAI SDK v6
+      enable_thinking: false,
+    });
 
     let rawContent = llmResponse.choices[0].message.content
       .trim()
